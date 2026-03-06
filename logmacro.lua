@@ -3,6 +3,11 @@ return function(Config)
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
+-- Executed Check
+local existing = game.CoreGui:FindFirstChild("LogMacroUI")
+if existing then
+    existing:Destroy()
+end
 
 -- UI
 
@@ -25,7 +30,6 @@ TextLabel.BackgroundTransparency = 0.3
 TextLabel.TextScaled = true
 TextLabel.Font = Enum.Font.SourceSansBold
 TextLabel.Visible = false
-
 
 local messageID = 0
 
