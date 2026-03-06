@@ -122,6 +122,6 @@ humanoid.HealthChanged:Connect(function(newHealth)
 
 end)
 
-showMessage("logMacro Enabled")
+showMessage("autoLog Enabled")
 
 end
