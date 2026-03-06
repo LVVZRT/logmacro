@@ -73,9 +73,9 @@ UserInputService.InputBegan:Connect(function(input,gp)
         macroEnabled = not macroEnabled
 
         if macroEnabled then
-            showMessage("logMacro Enabled")
+            showMessage("autoLog Enabled")
         else
-            showMessage("logMacro Disabled")
+            showMessage("autoLog Disabled")
         end
 
     end
