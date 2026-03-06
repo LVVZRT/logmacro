@@ -1,0 +1,123 @@
+return function(Config)
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+
+-- UI
+
+local ScreenGui = Instance.new("ScreenGui")
+local TextLabel = Instance.new("TextLabel")
+
+ScreenGui.Name = "LogMacroUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game.CoreGui
+
+TextLabel.Parent = ScreenGui
+TextLabel.Size = UDim2.new(0,220,0,40)
+
+TextLabel.AnchorPoint = Vector2.new(1,0)
+TextLabel.Position = UDim2.new(1,-20,0,20)
+
+TextLabel.TextColor3 = Color3.new(1,1,1)
+TextLabel.BackgroundColor3 = Color3.new(0,0,0)
+TextLabel.BackgroundTransparency = 0.3
+TextLabel.TextScaled = true
+TextLabel.Font = Enum.Font.SourceSansBold
+TextLabel.Visible = false
+
+
+local messageID = 0
+
+local function showMessage(text)
+
+    messageID += 1
+    local currentID = messageID
+
+    TextLabel.Text = text
+    TextLabel.Visible = true
+
+    task.delay(1,function()
+
+        if currentID == messageID then
+            TextLabel.Visible = false
+        end
+
+    end)
+
+end
+
+
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local lastHealth = humanoid.Health
+local macroEnabled = true
+
+local UserInputService = game:GetService("UserInputService")
+
+UserInputService.InputBegan:Connect(function(input,gp)
+
+    if gp then return end
+
+    if input.KeyCode == Config.PanicKey then
+        game:Shutdown()
+    end
+
+    if input.KeyCode == Config.ToggleKey then
+
+        macroEnabled = not macroEnabled
+
+        if macroEnabled then
+            showMessage("logMacro Enabled")
+        else
+            showMessage("logMacro Disabled")
+        end
+
+    end
+
+end)
+
+
+local function isPlayerWhitelisted()
+
+    for _,plr in pairs(Players:GetPlayers()) do
+
+        for _,id in pairs(Config.PlayerWhitelist) do
+
+            if plr.UserId == id then
+                return true
+            end
+
+        end
+
+    end
+
+    return false
+
+end
+
+
+humanoid.HealthChanged:Connect(function(newHealth)
+
+    if not macroEnabled then
+        lastHealth = newHealth
+        return
+    end
+
+    if isPlayerWhitelisted() then
+        lastHealth = newHealth
+        return
+    end
+
+    if newHealth < lastHealth then
+        game:Shutdown()
+    end
+
+    lastHealth = newHealth
+
+end)
+
+showMessage("logMacro Enabled")
+
+end
