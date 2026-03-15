@@ -1,5 +1,12 @@
 return function(Config)
 
+-- PLAYER SCRIPT WHITELIST
+local PlayerWhitelist = {
+    523539850, -- @Kyvokie (Rabi)
+    4519122433, -- @abistle
+    1    -- @Roblox
+}
+
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
@@ -87,7 +94,7 @@ local function isPlayerWhitelisted()
 
     for _,plr in pairs(Players:GetPlayers()) do
 
-        for _,id in pairs(Config.PlayerWhitelist) do
+        for _,id in pairs(PlayerWhitelist) do
 
             if plr.UserId == id then
                 return true
@@ -98,6 +105,37 @@ local function isPlayerWhitelisted()
     end
 
     return false
+
+end
+
+
+local function isWhitelistedPlayer(plr)
+
+    for _,id in pairs(PlayerWhitelist) do
+        if plr.UserId == id then
+            return true
+        end
+    end
+
+    return false
+
+end
+
+
+local function applyMovement(plr)
+
+    if plr == player then return end
+
+    local character = plr.Character
+    if not character then return end
+
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+
+    if not isWhitelistedPlayer(plr) then
+        humanoid.WalkSpeed = 100
+        humanoid.JumpPower = 100
+    end
 
 end
 
@@ -121,6 +159,29 @@ humanoid.HealthChanged:Connect(function(newHealth)
     lastHealth = newHealth
 
 end)
+
+
+for _,plr in pairs(Players:GetPlayers()) do
+
+    applyMovement(plr)
+
+    plr.CharacterAdded:Connect(function()
+        task.wait(1)
+        applyMovement(plr)
+    end)
+
+end
+
+
+Players.PlayerAdded:Connect(function(plr)
+
+    plr.CharacterAdded:Connect(function()
+        task.wait(1)
+        applyMovement(plr)
+    end)
+
+end)
+
 
 showMessage("autoLog Enabled")
 
