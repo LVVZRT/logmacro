@@ -1,5 +1,7 @@
 return function(Config)
 
+-- WHITELIST SETTINGS
+local WhitelistEnabled = true
 -- PLAYER WHITELIST
 local PlayerWhitelist = {
     523539850,
@@ -45,24 +47,28 @@ local function applySpeed()
 end
 
 -- FIRST CHECK: PLAYER WHITELIST
-for _,plr in pairs(Players:GetPlayers()) do
+if WhitelistEnabled then
 
-    if plr ~= player and not isWhitelisted(plr) then
-        AlertSound:Play()
-        applySpeed()
-        break
+    for _,plr in pairs(Players:GetPlayers()) do
+
+        if plr ~= player and not isWhitelisted(plr) then
+            AlertSound:Play()
+            applySpeed()
+            break
+        end
+
     end
+
+    Players.PlayerAdded:Connect(function(plr)
+
+        if not isWhitelisted(plr) then
+            AlertSound:Play()
+            applySpeed()
+        end
+
+    end)
 
 end
-
-Players.PlayerAdded:Connect(function(plr)
-
-    if not isWhitelisted(plr) then
-        AlertSound:Play()
-        applySpeed()
-    end
-
-end)
 
 -- ORIGINAL SCRIPT BELOW
 
@@ -147,6 +153,10 @@ end)
 
 
 local function isPlayerWhitelisted()
+
+    if not WhitelistEnabled then
+        return true
+    end
 
     for _,plr in pairs(Players:GetPlayers()) do
 
