@@ -3,8 +3,8 @@ return function(Config)
 -- PLAYER WHITELIST (PUT ROBLOX IDS HERE)
 local PlayerWhitelist = {
     523539850, -- Kyvokie
-    4519122433, -- Abistle
-    1
+    1,
+    2
 }
 
 local Players = game:GetService("Players")
@@ -29,7 +29,7 @@ local function isWhitelisted(plr)
 
 end
 
--- APPLY MOVEMENT + SOUND
+-- APPLY MOVEMENT (INFINITE YIELD STYLE)
 local function applyMovement(plr)
 
     if plr == player then return end
@@ -39,9 +39,17 @@ local function applyMovement(plr)
         local humanoid = character:WaitForChild("Humanoid")
 
         if not isWhitelisted(plr) then
-            humanoid.WalkSpeed = 100
-            humanoid.JumpPower = 100
+
             AlertSound:Play()
+
+            task.spawn(function()
+                while humanoid and humanoid.Parent and not isWhitelisted(plr) do
+                    humanoid.WalkSpeed = 100
+                    humanoid.JumpPower = 100
+                    task.wait()
+                end
+            end)
+
         end
 
     end
@@ -63,7 +71,7 @@ Players.PlayerAdded:Connect(function(plr)
     applyMovement(plr)
 end)
 
--- EVERYTHING BELOW IS YOUR ORIGINAL SCRIPT
+-- ORIGINAL SCRIPT BELOW
 
 -- Executed Check
 local existing = game.CoreGui:FindFirstChild("LogMacroUI")
