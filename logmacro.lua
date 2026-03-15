@@ -3,7 +3,7 @@ return function(Config)
 -- PLAYER WHITELIST
 local PlayerWhitelist = {
     523539850,
-    2,
+    4519122433,
     1
 }
 
