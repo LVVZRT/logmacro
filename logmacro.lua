@@ -10,11 +10,60 @@ local PlayerWhitelist = {
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- SOUND (PLAYS WHEN NON-WHITELISTED PLAYER DETECTED)
+-- ALERT SOUND
 local AlertSound = Instance.new("Sound")
 AlertSound.SoundId = "rbxassetid://102770722936174"
 AlertSound.Volume = 1
 AlertSound.Parent = game:GetService("SoundService")
+
+-- CHECK IF PLAYER IS WHITELISTED
+local function isWhitelisted(plr)
+
+    for _,id in pairs(PlayerWhitelist) do
+        if plr.UserId == id then
+            return true
+        end
+    end
+
+    return false
+
+end
+
+-- APPLY MOVEMENT + SOUND
+local function applyMovement(plr)
+
+    if plr == player then return end
+
+    local function apply(character)
+
+        local humanoid = character:WaitForChild("Humanoid")
+
+        if not isWhitelisted(plr) then
+            humanoid.WalkSpeed = 100
+            humanoid.JumpPower = 100
+            AlertSound:Play()
+        end
+
+    end
+
+    if plr.Character then
+        apply(plr.Character)
+    end
+
+    plr.CharacterAdded:Connect(apply)
+
+end
+
+-- FIRST THING THE SCRIPT DOES
+for _,plr in pairs(Players:GetPlayers()) do
+    applyMovement(plr)
+end
+
+Players.PlayerAdded:Connect(function(plr)
+    applyMovement(plr)
+end)
+
+-- EVERYTHING BELOW IS YOUR ORIGINAL SCRIPT
 
 -- Executed Check
 local existing = game.CoreGui:FindFirstChild("LogMacroUI")
@@ -115,40 +164,6 @@ local function isPlayerWhitelisted()
 end
 
 
-local function isWhitelistedPlayer(plr)
-
-    for _,id in pairs(PlayerWhitelist) do
-        if plr.UserId == id then
-            return true
-        end
-    end
-
-    return false
-
-end
-
-
-local function applyMovement(plr)
-
-    if plr == player then return end
-
-    local character = plr.Character
-    if not character then return end
-
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if not humanoid then return end
-
-    if not isWhitelistedPlayer(plr) then
-        humanoid.WalkSpeed = 100
-        humanoid.JumpPower = 100
-
-        -- PLAY ALERT SOUND
-        AlertSound:Play()
-    end
-
-end
-
-
 humanoid.HealthChanged:Connect(function(newHealth)
 
     if not macroEnabled then
@@ -168,29 +183,6 @@ humanoid.HealthChanged:Connect(function(newHealth)
     lastHealth = newHealth
 
 end)
-
-
-for _,plr in pairs(Players:GetPlayers()) do
-
-    applyMovement(plr)
-
-    plr.CharacterAdded:Connect(function()
-        task.wait(1)
-        applyMovement(plr)
-    end)
-
-end
-
-
-Players.PlayerAdded:Connect(function(plr)
-
-    plr.CharacterAdded:Connect(function()
-        task.wait(1)
-        applyMovement(plr)
-    end)
-
-end)
-
 
 showMessage("autoLog Enabled")
 
