@@ -1,7 +1,12 @@
 return function(Config)
 
+-- =====================================================
+--                WHITELIST / ALERT SYSTEM
+-- =====================================================
+
 -- WHITELIST SETTINGS
 local WhitelistEnabled = false
+
 -- PLAYER WHITELIST
 local PlayerWhitelist = {
     523539850,
@@ -21,7 +26,7 @@ AlertSound.Parent = game:GetService("SoundService")
 -- CHECK IF PLAYER IS WHITELISTED
 local function isWhitelisted(plr)
 
-    for _,id in pairs(PlayerWhitelist) do
+    for _, id in pairs(PlayerWhitelist) do
         if plr.UserId == id then
             return true
         end
@@ -30,14 +35,14 @@ local function isWhitelisted(plr)
     return false
 end
 
--- APPLY INFINITE YIELD STYLE SPEED
+-- APPLY WALKSPEED + JUMPPOWER
 local function applySpeed()
 
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
 
     task.spawn(function()
-        while true do
+        while WhitelistEnabled do
             humanoid.WalkSpeed = 100
             humanoid.JumpPower = 100
             task.wait()
@@ -46,10 +51,14 @@ local function applySpeed()
 
 end
 
--- FIRST CHECK: PLAYER WHITELIST
-if WhitelistEnabled then
+-- CHECK CURRENT PLAYERS
+local function CheckWhitelist()
 
-    for _,plr in pairs(Players:GetPlayers()) do
+    if not WhitelistEnabled then
+        return
+    end
+
+    for _, plr in pairs(Players:GetPlayers()) do
 
         if plr ~= player and not isWhitelisted(plr) then
             AlertSound:Play()
@@ -59,18 +68,26 @@ if WhitelistEnabled then
 
     end
 
-    Players.PlayerAdded:Connect(function(plr)
-
-        if not isWhitelisted(plr) then
-            AlertSound:Play()
-            applySpeed()
-        end
-
-    end)
-
 end
 
--- ORIGINAL SCRIPT BELOW
+CheckWhitelist()
+
+-- CHECK NEW PLAYERS
+Players.PlayerAdded:Connect(function(plr)
+
+    if WhitelistEnabled and not isWhitelisted(plr) then
+        AlertSound:Play()
+        applySpeed()
+    end
+
+end)
+
+
+
+-- =====================================================
+--                     AUTO LOG SCRIPT
+-- =====================================================
+
 
 -- Executed Check
 local existing = game.CoreGui:FindFirstChild("LogMacroUI")
@@ -158,9 +175,9 @@ local function isPlayerWhitelisted()
         return true
     end
 
-    for _,plr in pairs(Players:GetPlayers()) do
+    for _, plr in pairs(Players:GetPlayers()) do
 
-        for _,id in pairs(PlayerWhitelist) do
+        for _, id in pairs(PlayerWhitelist) do
 
             if plr.UserId == id then
                 return true
