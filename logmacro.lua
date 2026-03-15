@@ -2,9 +2,9 @@ return function(Config)
 
 -- PLAYER WHITELIST (PUT ROBLOX IDS HERE)
 local PlayerWhitelist = {
-    12345678,
-    87654321,
-    11223344
+    523539850, -- Kyvokie
+    4519122433, -- Abistle
+    1
 }
 
 local Players = game:GetService("Players")
