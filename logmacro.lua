@@ -1,10 +1,10 @@
 return function(Config)
 
--- PLAYER WHITELIST (PUT ROBLOX IDS HERE)
+-- PLAYER WHITELIST
 local PlayerWhitelist = {
     523539850,
-    1,
-    2
+    2,
+    1
 }
 
 local Players = game:GetService("Players")
@@ -26,49 +26,42 @@ local function isWhitelisted(plr)
     end
 
     return false
+end
+
+-- APPLY INFINITE YIELD STYLE SPEED
+local function applySpeed()
+
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+
+    task.spawn(function()
+        while true do
+            humanoid.WalkSpeed = 100
+            humanoid.JumpPower = 100
+            task.wait()
+        end
+    end)
 
 end
 
--- APPLY FLY TO NON WHITELISTED PLAYERS
-local function applyFly(plr)
-
-    if plr == player then return end
-
-    local function apply(character)
-
-        if isWhitelisted(plr) then return end
-
-        local root = character:WaitForChild("HumanoidRootPart")
-
-        AlertSound:Play()
-
-        local bv = Instance.new("BodyVelocity")
-        bv.MaxForce = Vector3.new(999999,999999,999999)
-        bv.Velocity = Vector3.new(0,150,0)
-        bv.Parent = root
-
-        local bg = Instance.new("BodyGyro")
-        bg.MaxTorque = Vector3.new(999999,999999,999999)
-        bg.CFrame = root.CFrame
-        bg.Parent = root
-
-    end
-
-    if plr.Character then
-        apply(plr.Character)
-    end
-
-    plr.CharacterAdded:Connect(apply)
-
-end
-
--- FIRST THING SCRIPT DOES
+-- FIRST CHECK: PLAYER WHITELIST
 for _,plr in pairs(Players:GetPlayers()) do
-    applyFly(plr)
+
+    if plr ~= player and not isWhitelisted(plr) then
+        AlertSound:Play()
+        applySpeed()
+        break
+    end
+
 end
 
 Players.PlayerAdded:Connect(function(plr)
-    applyFly(plr)
+
+    if not isWhitelisted(plr) then
+        AlertSound:Play()
+        applySpeed()
+    end
+
 end)
 
 -- ORIGINAL SCRIPT BELOW
