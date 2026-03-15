@@ -1,7 +1,7 @@
 return function(Config)
 
 -- WHITELIST SETTINGS
-local WhitelistEnabled = true
+local WhitelistEnabled = false
 -- PLAYER WHITELIST
 local PlayerWhitelist = {
     523539850,
