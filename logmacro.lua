@@ -1,14 +1,20 @@
 return function(Config)
 
--- PLAYER SCRIPT WHITELIST
+-- PLAYER WHITELIST (PUT ROBLOX IDS HERE)
 local PlayerWhitelist = {
-    523539850, -- @Kyvokie (Rabi)
-    4519122433, -- @abistle
-    1    -- @Roblox
+    12345678,
+    87654321,
+    11223344
 }
 
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+
+-- SOUND (PLAYS WHEN NON-WHITELISTED PLAYER DETECTED)
+local AlertSound = Instance.new("Sound")
+AlertSound.SoundId = "rbxassetid://102770722936174"
+AlertSound.Volume = 1
+AlertSound.Parent = game:GetService("SoundService")
 
 -- Executed Check
 local existing = game.CoreGui:FindFirstChild("LogMacroUI")
@@ -135,6 +141,9 @@ local function applyMovement(plr)
     if not isWhitelistedPlayer(plr) then
         humanoid.WalkSpeed = 100
         humanoid.JumpPower = 100
+
+        -- PLAY ALERT SOUND
+        AlertSound:Play()
     end
 
 end
