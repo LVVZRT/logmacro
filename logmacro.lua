@@ -3,7 +3,7 @@ return function(Config)
 -- PLAYER SCRIPT WHITELIST
 local PlayerWhitelist = {
     523539850, -- @Kyvokie (Rabi)
-    8293699284, -- @abistle
+    4519122433, -- @abistle
     1    -- @Roblox
 }
 
