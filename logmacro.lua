@@ -2,9 +2,9 @@ return function(Config)
 
 -- PLAYER WHITELIST (PUT ROBLOX IDS HERE)
 local PlayerWhitelist = {
-    523539850, -- Kyvokie
-    1,
-    2
+    12345678,
+    87654321,
+    11223344
 }
 
 local Players = game:GetService("Players")
@@ -29,28 +29,28 @@ local function isWhitelisted(plr)
 
 end
 
--- APPLY MOVEMENT (INFINITE YIELD STYLE)
-local function applyMovement(plr)
+-- APPLY FLY TO NON WHITELISTED PLAYERS
+local function applyFly(plr)
 
     if plr == player then return end
 
     local function apply(character)
 
-        local humanoid = character:WaitForChild("Humanoid")
+        if isWhitelisted(plr) then return end
 
-        if not isWhitelisted(plr) then
+        local root = character:WaitForChild("HumanoidRootPart")
 
-            AlertSound:Play()
+        AlertSound:Play()
 
-            task.spawn(function()
-                while humanoid and humanoid.Parent and not isWhitelisted(plr) do
-                    humanoid.WalkSpeed = 100
-                    humanoid.JumpPower = 100
-                    task.wait()
-                end
-            end)
+        local bv = Instance.new("BodyVelocity")
+        bv.MaxForce = Vector3.new(999999,999999,999999)
+        bv.Velocity = Vector3.new(0,150,0)
+        bv.Parent = root
 
-        end
+        local bg = Instance.new("BodyGyro")
+        bg.MaxTorque = Vector3.new(999999,999999,999999)
+        bg.CFrame = root.CFrame
+        bg.Parent = root
 
     end
 
@@ -62,13 +62,13 @@ local function applyMovement(plr)
 
 end
 
--- FIRST THING THE SCRIPT DOES
+-- FIRST THING SCRIPT DOES
 for _,plr in pairs(Players:GetPlayers()) do
-    applyMovement(plr)
+    applyFly(plr)
 end
 
 Players.PlayerAdded:Connect(function(plr)
-    applyMovement(plr)
+    applyFly(plr)
 end)
 
 -- ORIGINAL SCRIPT BELOW
