@@ -1,10 +1,3 @@
-
-
--- =====================================================
---                     AUTO LOG SCRIPT
--- =====================================================
-
-
 -- Executed Check
 local existing = game.CoreGui:FindFirstChild("LogMacroUI")
 if existing then
