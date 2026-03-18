@@ -1,4 +1,4 @@
-return function(Config)
+
 
 -- =====================================================
 --                     AUTO LOG SCRIPT
