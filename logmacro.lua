@@ -125,5 +125,3 @@ humanoid.HealthChanged:Connect(function(newHealth)
 end)
 
 showMessage("autoLog Enabled")
-
-end
