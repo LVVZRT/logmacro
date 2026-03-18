@@ -1,3 +1,5 @@
+return function(Config)
+
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
@@ -83,20 +85,12 @@ end)
 
 local function isPlayerWhitelisted()
 
-    if not WhitelistEnabled then
-        return true
-    end
-
     for _, plr in pairs(Players:GetPlayers()) do
-
-        for _, id in pairs(PlayerWhitelist) do
-
+        for _, id in pairs(Config.PlayerWhitelist or {}) do
             if plr.UserId == id then
                 return true
             end
-
         end
-
     end
 
     return false
@@ -125,7 +119,5 @@ humanoid.HealthChanged:Connect(function(newHealth)
 end)
 
 showMessage("autoLog Enabled")
-
-end
 
 end
