@@ -16,7 +16,7 @@ local TextLabel = Instance.new("TextLabel")
 
 ScreenGui.Name = "LogMacroUI"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = game.CoreGui
+ScreenGui.Parent = game:GetService("CoreGui")
 
 TextLabel.Parent = ScreenGui
 TextLabel.Size = UDim2.new(0,220,0,40)
