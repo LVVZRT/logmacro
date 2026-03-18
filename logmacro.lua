@@ -1,3 +1,6 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
 -- Executed Check
 local existing = game.CoreGui:FindFirstChild("LogMacroUI")
 if existing then
